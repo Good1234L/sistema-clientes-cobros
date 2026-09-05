@@ -104,7 +104,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("💡 Sistema de Registro, Cobros y Modificación")
+st.title("💡 Sistema de Registro y Cobros ")
 st.markdown("---")
 
 col_form, col_info = st.columns([1.2, 1.8], gap="large")
