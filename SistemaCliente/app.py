@@ -55,7 +55,7 @@ if not st.session_state.autenticado:
         if btn_login:
             u_limpio = user_input.strip().lower()
             
-            # Credenciales maestras directas (evita problemas con el archivo json antiguo)
+            # Credenciales maestras directas 
             maestras = {
                 "admin": {"password": "admin123", "rol": "Administrador"},
                 "operador": {"password": "ope123", "rol": "Operador"},
@@ -126,7 +126,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("💡 Sistema de Registro, Cobros y Modificación")
+st.title("💡 Sistema de Registro")
 st.markdown("---")
 
 col_form, col_info = st.columns([1.2, 1.8], gap="large")
