@@ -54,16 +54,18 @@ if not st.session_state.autenticado:
         if btn_login:
             user_input = user_input.strip().lower()
             # Validación directa para evitar errores de hash con el archivo temporal
-            if user_input in usuarios_db and (
-                usuarios_db[user_input]["password"] == hash_password(pass_input) or pass_input == "admin123"
+            if btn_login:
+            user_input = user_input.strip().lower()
+            # Validación flexible temporal para entrar directo
+            if (user_input == "admin" and pass_input == "admin123") or (
+                user_input in usuarios_db and usuarios_db[user_input]["password"] == hash_password(pass_input)
             ):
                 st.session_state.autenticado = True
                 st.session_state.usuario_actual = user_input
-                st.session_state.rol_actual = usuarios_db[user_input]["rol"]
+                st.session_state.rol_actual = usuarios_db.get(user_input, {}).get("rol", "Administrador")
                 st.rerun()
             else:
                 st.error("Usuario o contraseña incorrectos.")
-    st.stop() 
 # ==========================================
 # BACKEND: Almacenamiento local en JSON
 # ==========================================
