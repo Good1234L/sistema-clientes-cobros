@@ -104,14 +104,13 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-st.title("💡 Sistema de Registro y Cobros ")
+st.title("💡 Sistema de Registro, Cobros y Modificación")
 st.markdown("---")
 
 col_form, col_info = st.columns([1.2, 1.8], gap="large")
 
 with col_form:
     st.subheader("📝 Registrar Nuevo Cliente")
-    # Admin y Soporte pueden añadir registros
     if st.session_state.rol_actual in ["Administrador", "Soporte", "Operador"]:
         with st.form("form_cliente", clear_on_submit=True):
             nombre = st.text_input("Nombre del cliente (Solo letras):")
@@ -161,7 +160,7 @@ with col_info:
     else:
         st.info("ℹ️ Ingresa tu primer cliente para ver las estadísticas.")
 
-# Tabla general, búsqueda y exportación (Permiso de descarga solo para Admin y Soporte)
+# Tabla general, búsqueda y exportación (Con formato corregido para Excel)
 if st.session_state.clientes:
     st.markdown("---")
     st.subheader("📋 Lista General de Clientes")
@@ -172,10 +171,11 @@ if st.session_state.clientes:
     with col_descarga:
         st.markdown("### 📥 Exportar Datos")
         if st.session_state.rol_actual in ["Administrador", "Soporte"]:
+            # Corrección aplicada: sep=';' y utf-8-sig para columnas perfectas en Excel
             csv_data = df_clientes.to_csv(index=False, sep=';').encode('utf-8-sig')
             st.download_button(label="Descargar reporte en formato Excel (CSV)", data=csv_data, file_name="reporte_clientes_cortes.csv", mime="text/csv")
         else:
-            st.warning("⚠️ Tu perfil de Operador no tiene permisos para descargar el reporte.")
+            st.warning("⚠️ Tu perfil actual no tiene permisos para descargar el reporte.")
         
     with col_busqueda:
         st.markdown("### 🔍 Buscar Cliente")
