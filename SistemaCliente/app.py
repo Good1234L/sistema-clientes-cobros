@@ -172,7 +172,7 @@ if st.session_state.clientes:
     with col_descarga:
         st.markdown("### 📥 Exportar Datos")
         if st.session_state.rol_actual in ["Administrador", "Soporte"]:
-            csv_data = df_clientes.to_csv(index=False).encode('utf-8')
+            csv_data = df_clientes.to_csv(index=False, sep=';').encode('utf-8-sig')
             st.download_button(label="Descargar reporte en formato Excel (CSV)", data=csv_data, file_name="reporte_clientes_cortes.csv", mime="text/csv")
         else:
             st.warning("⚠️ Tu perfil de Operador no tiene permisos para descargar el reporte.")
