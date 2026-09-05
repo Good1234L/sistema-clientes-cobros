@@ -59,7 +59,11 @@ if not st.session_state.autenticado:
 # ==========================================
 # BACKEND: Almacenamiento local en JSON
 # ==========================================
-DB_FILE = "clientes_db.json"
+import os
+
+# Obtiene la ruta exacta de la carpeta donde se encuentra este script (app.py)
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+DB_FILE = os.path.join(BASE_DIR, "clientes_db.json")
 
 def cargar_datos():
     if os.path.exists(DB_FILE):
@@ -79,7 +83,6 @@ def guardar_datos(clientes):
 
 if "clientes" not in st.session_state:
     st.session_state.clientes = cargar_datos()
-
 # ==========================================
 # FRONTEND: Estilos y Diseño Web
 # ==========================================
