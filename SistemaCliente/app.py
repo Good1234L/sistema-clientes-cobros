@@ -47,7 +47,6 @@ usuarios_db = cargar_usuarios()
 if not st.session_state.autenticado:
     st.title("🔐 Acceso al Sistema de Cobros")
     with st.form("login_form"):
-       with st.form("login_form"):
         user_input = st.text_input("Usuario:")
         pass_input = st.text_input("Contraseña:", type="password")
         btn_login = st.form_submit_button("🔑 Iniciar Sesión")
