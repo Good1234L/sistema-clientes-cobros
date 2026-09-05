@@ -24,8 +24,8 @@ def cargar_usuarios():
             pass
     default_usuarios = {
         "admin": {"password": hash_password("admin123"), "rol": "Administrador"},
-        "operador": {"password": hash_password("ope123"), "rol": "Operador"},
-        "soporte": {"password": hash_password("sop123"), "rol": "Soporte"}
+        "soporte": {"password": hash_password("sop123"), "rol": "Soporte"},
+        "operador": {"password": hash_password("ope123"), "rol": "Operador"}
     }
     with open(CONFIG_FILE, "w", encoding="utf-8") as f:
         json.dump(default_usuarios, f, ensure_ascii=False, indent=4)
@@ -111,7 +111,8 @@ col_form, col_info = st.columns([1.2, 1.8], gap="large")
 
 with col_form:
     st.subheader("📝 Registrar Nuevo Cliente")
-    if st.session_state.rol_actual in ["Administrador", "Operador"]:
+    # Admin y Soporte pueden añadir registros
+    if st.session_state.rol_actual in ["Administrador", "Soporte", "Operador"]:
         with st.form("form_cliente", clear_on_submit=True):
             nombre = st.text_input("Nombre del cliente (Solo letras):")
             costo = st.number_input("Costo actual ($)", min_value=0.0, format="%.2f")
@@ -144,8 +145,6 @@ with col_form:
                     guardar_datos(st.session_state.clientes)
                     st.success(f"¡Cliente guardado exitosamente con el ID #{nuevo_id}!")
                     st.rerun()
-    else:
-        st.warning("⚠️ Tu perfil de Soporte no tiene permisos para registrar clientes.")
 
 with col_info:
     st.subheader("📊 Panel de Métricas")
@@ -162,7 +161,7 @@ with col_info:
     else:
         st.info("ℹ️ Ingresa tu primer cliente para ver las estadísticas.")
 
-# Tabla general, búsqueda y exportación
+# Tabla general, búsqueda y exportación (Permiso de descarga solo para Admin y Soporte)
 if st.session_state.clientes:
     st.markdown("---")
     st.subheader("📋 Lista General de Clientes")
@@ -172,8 +171,11 @@ if st.session_state.clientes:
     col_descarga, col_busqueda = st.columns([1, 1], gap="medium")
     with col_descarga:
         st.markdown("### 📥 Exportar Datos")
-        csv_data = df_clientes.to_csv(index=False).encode('utf-8')
-        st.download_button(label="Descargar reporte en formato Excel (CSV)", data=csv_data, file_name="reporte_clientes_cortes.csv", mime="text/csv")
+        if st.session_state.rol_actual in ["Administrador", "Soporte"]:
+            csv_data = df_clientes.to_csv(index=False).encode('utf-8')
+            st.download_button(label="Descargar reporte en formato Excel (CSV)", data=csv_data, file_name="reporte_clientes_cortes.csv", mime="text/csv")
+        else:
+            st.warning("⚠️ Tu perfil de Operador no tiene permisos para descargar el reporte.")
         
     with col_busqueda:
         st.markdown("### 🔍 Buscar Cliente")
@@ -192,12 +194,12 @@ if st.session_state.clientes:
                 st.warning("No se encontró ningún registro.")
 
 # ==========================================
-# SECCIÓN: MODIFICAR (Solo Admin/Operador)
+# SECCIÓN: MODIFICAR (Solo Admin)
 # ==========================================
 if st.session_state.clientes:
     st.markdown("---")
     st.subheader("✏️ Modificar o Corregir Datos de un Cliente")
-    if st.session_state.rol_actual in ["Administrador", "Operador"]:
+    if st.session_state.rol_actual == "Administrador":
         ids_disponibles = [c["ID"] for c in st.session_state.clientes]
         id_a_modificar = st.selectbox("Selecciona el número de ID del cliente a corregir:", ids_disponibles)
         cliente_actual = next((c for c in st.session_state.clientes if c["ID"] == id_a_modificar), None)
@@ -234,4 +236,4 @@ if st.session_state.clientes:
                         st.success(f"✅ ¡Cliente ID #{id_a_modificar} actualizado correctamente!")
                         st.rerun()
     else:
-        st.warning("⚠️ Tu perfil de Soporte no tiene permisos para modificar datos.")
+        st.warning("⚠️ La sección de modificación está restringida exclusivamente al Administrador.")
